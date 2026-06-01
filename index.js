@@ -410,26 +410,44 @@ app.get('/health', publicLimiter, (req, res) => {
   })
 })
 
-app.get('/docs', publicLimiter, (req, res) => {
+// Update server.js - tambahkan route untuk docs page
+// Tambahkan ini di server.js sebelum route lainnya
+
+// Serve docs page
+app.get('/docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'docs.html'))
+})
+
+// API documentation in JSON format (untuk developer)
+app.get('/api/docs', (req, res) => {
   res.json({
     name: 'SoundCloud Scraper API',
     version: '1.0.0',
-    rate_limits: {
-      per_ip: `${CONFIG.MAX_REQUESTS_PER_WINDOW} requests per ${CONFIG.WINDOW_MS / 1000} seconds`,
-      per_second: `${CONFIG.MAX_REQUESTS_PER_SECOND} requests per second`,
-      global: `${CONFIG.GLOBAL_MAX_REQUESTS} requests per minute (all IPs combined)`,
-      block_duration: `${CONFIG.BLOCK_DURATION / 60000} minutes for DDoS detection`
-    },
+    base_url: 'https://music.fazzcode.qzz.io',
     authentication: {
       required: true,
-      methods: ['X-API-Key header', 'Authorization: Bearer <key>', 'api_key query parameter'],
-      get_key: 'https://raw.githubusercontent.com/fazzcode/api-keys/main/soundcloud-keys.json'
+      methods: ['X-API-Key header', 'Authorization: Bearer <key>', 'api_key query parameter']
     },
     endpoints: {
-      '/api/soundcloud': {
-        methods: ['GET', 'POST'],
-        authentication: 'Required',
-        actions: ['homepage', 'search', 'track', 'playlist']
+      homepage: {
+        method: ['GET', 'POST'],
+        path: '/api/soundcloud',
+        params: { action: 'homepage', limit: 'optional (default: 20)' }
+      },
+      search: {
+        method: ['GET', 'POST'],
+        path: '/api/soundcloud',
+        params: { action: 'search', query: 'required', limit: 'optional' }
+      },
+      track: {
+        method: ['GET', 'POST'],
+        path: '/api/soundcloud',
+        params: { action: 'track', track_id: 'required' }
+      },
+      playlist: {
+        method: ['GET', 'POST'],
+        path: '/api/soundcloud',
+        params: { action: 'playlist', playlist_id: 'required' }
       }
     }
   })
