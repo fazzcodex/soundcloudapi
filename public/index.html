@@ -1,0 +1,513 @@
+<!-- public/index.html - Updated with API key input -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundCloud Scraper API - FazzCode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff7700, #ff5500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ff5500;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 15px;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ff7700;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #ff7700;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff7700, #ff5500);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Response */
+        .response-area {
+            margin-top: 20px;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background: rgba(255,255,255,0.1);
+            padding: 5px 12px;
+            font-size: 0.8rem;
+        }
+
+        pre {
+            background: #0a0a0f;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.8rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Examples */
+        .example {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .example:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .example code {
+            color: #ffaa66;
+            font-size: 0.8rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: #ff7700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* API Key Status */
+        .key-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-left: 10px;
+        }
+
+        .key-valid {
+            background: #00aa55;
+            color: white;
+        }
+
+        .key-invalid {
+            background: #ff3333;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .footer a {
+            color: #ff7700;
+            text-decoration: none;
+        }
+
+        .api-key-input {
+            position: relative;
+        }
+
+        .api-key-input input {
+            padding-right: 80px;
+        }
+
+        .save-key-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 SoundCloud Scraper API</h1>
+            <p>Free SoundCloud API - Search tracks, get playlists, streaming URLs</p>
+            <div class="badge">✨ Powered by FazzCode | 🔐 API Key Required</div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Left Panel - API Key & Request Form -->
+            <div class="card">
+                <h2>🔑 API Key</h2>
+                <div class="form-group api-key-input" style="position: relative;">
+                    <input type="password" id="apiKey" placeholder="Masukkan API Key Anda" />
+                    <button type="button" id="saveApiKey" class="save-key-btn" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); padding: 6px 12px; font-size: 0.7rem;">💾 Save</button>
+                </div>
+                <div id="keyStatus" style="font-size: 0.7rem; margin-top: 5px;"></div>
+                <div style="font-size: 0.7rem; color: #888; margin-top: 10px;">
+                    🔑 Dapatkan API Key: <a href="https://raw.githubusercontent.com/fazzcode/api-keys/main/soundcloud-keys.json" target="_blank" style="color:#ff7700;">GitHub JSON</a>
+                </div>
+
+                <hr style="margin: 20px 0; border-color: rgba(255,255,255,0.1);">
+
+                <h2>📡 API Request</h2>
+                <form id="apiForm">
+                    <div class="form-group">
+                        <label>Action *</label>
+                        <select id="action" name="action" required>
+                            <option value="homepage">🏠 Homepage - Trending Playlists</option>
+                            <option value="search">🔍 Search - Cari Tracks</option>
+                            <option value="track">🎵 Track - Detail Track + Related + Comments</option>
+                            <option value="playlist">📀 Playlist - Detail Playlist + Tracks</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="queryGroup" style="display:none;">
+                        <label>Query / Keyword *</label>
+                        <input type="text" id="query" placeholder="Contoh: iqro, dangdut, breakbeat" />
+                    </div>
+
+                    <div class="form-group" id="trackIdGroup" style="display:none;">
+                        <label>Track ID *</label>
+                        <input type="number" id="track_id" placeholder="Contoh: 2258880134" />
+                    </div>
+
+                    <div class="form-group" id="playlistIdGroup" style="display:none;">
+                        <label>Playlist ID *</label>
+                        <input type="number" id="playlist_id" placeholder="Contoh: 1734880683" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Limit (max 50)</label>
+                        <input type="number" id="limit" value="10" min="1" max="50" />
+                    </div>
+
+                    <button type="submit">🚀 Send Request</button>
+                </form>
+            </div>
+
+            <!-- Right Panel - Examples & Info -->
+            <div class="card">
+                <h2>📚 Contoh Request</h2>
+                <div class="example" data-action="homepage">
+                    <code>GET /api/soundcloud?action=homepage&limit=10&api_key=YOUR_KEY</code>
+                    <div style="font-size:0.7rem; color:#888; margin-top:5px;">Trending playlist terbaru</div>
+                </div>
+                <div class="example" data-action="search" data-query="iqro">
+                    <code>GET /api/soundcloud?action=search&query=iqro&limit=10&api_key=YOUR_KEY</code>
+                    <div style="font-size:0.7rem; color:#888; margin-top:5px;">Cari track "iqro"</div>
+                </div>
+                <div class="example" data-action="track" data-track-id="2258880134">
+                    <code>GET /api/soundcloud?action=track&track_id=2258880134&api_key=YOUR_KEY</code>
+                    <div style="font-size:0.7rem; color:#888; margin-top:5px;">Detail track Iqro' - Raim Laode</div>
+                </div>
+                <div class="example" data-action="playlist" data-playlist-id="1734880683">
+                    <code>GET /api/soundcloud?action=playlist&playlist_id=1734880683&api_key=YOUR_KEY</code>
+                    <div style="font-size:0.7rem; color:#888; margin-top:5px;">Detail playlist Hip Hop & Rap</div>
+                </div>
+
+                <hr style="margin: 20px 0; border-color: rgba(255,255,255,0.1);">
+
+                <h2>📖 Cara Penggunaan</h2>
+                <div style="font-size:0.85rem; line-height:1.6;">
+                    <p><strong>1. Dapatkan API Key</strong></p>
+                    <pre style="font-size:0.7rem; background:#0a0a0f; padding:10px;">https://raw.githubusercontent.com/fazzcode/api-keys/main/soundcloud-keys.json</pre>
+                    
+                    <p><strong>2. Kirim Request dengan Header:</strong></p>
+                    <pre style="font-size:0.7rem; background:#0a0a0f; padding:10px;">X-API-Key: your_api_key_here</pre>
+                    
+                    <p><strong>Atau dengan Query Parameter:</strong></p>
+                    <pre style="font-size:0.7rem; background:#0a0a0f; padding:10px;">?api_key=your_api_key_here</pre>
+                    
+                    <p><strong>Atau dengan Bearer Token:</strong></p>
+                    <pre style="font-size:0.7rem; background:#0a0a0f; padding:10px;">Authorization: Bearer your_api_key_here</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Response Panel -->
+        <div class="card response-area" id="responsePanel" style="display:none;">
+            <div class="response-header">
+                <h2>📤 Response</h2>
+                <button class="copy-btn" id="copyBtn">📋 Copy</button>
+            </div>
+            <pre id="responseContent">Loading...</pre>
+        </div>
+
+        <div class="footer">
+            <p>SoundCloud Scraper API | <a href="/docs">API Documentation</a> | <a href="/health">Health Check</a></p>
+            <p>⚠️ For educational purposes only. Respect SoundCloud's terms of service.</p>
+        </div>
+    </div>
+
+    <script>
+        // Load saved API key
+        let savedApiKey = localStorage.getItem('soundcloud_api_key') || ''
+        const apiKeyInput = document.getElementById('apiKey')
+        const saveApiKeyBtn = document.getElementById('saveApiKey')
+        const keyStatusDiv = document.getElementById('keyStatus')
+        
+        if (savedApiKey) {
+            apiKeyInput.value = savedApiKey
+            keyStatusDiv.innerHTML = '<span class="key-status key-valid">✓ API Key tersimpan</span>'
+        }
+        
+        saveApiKeyBtn.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim()
+            if (key) {
+                localStorage.setItem('soundcloud_api_key', key)
+                savedApiKey = key
+                keyStatusDiv.innerHTML = '<span class="key-status key-valid">✓ API Key tersimpan</span>'
+                setTimeout(() => {
+                    keyStatusDiv.innerHTML = ''
+                }, 3000)
+            } else {
+                keyStatusDiv.innerHTML = '<span class="key-status key-invalid">✗ API Key tidak boleh kosong</span>'
+            }
+        })
+        
+        // Show/hide form fields based on action
+        const actionSelect = document.getElementById('action')
+        const queryGroup = document.getElementById('queryGroup')
+        const trackIdGroup = document.getElementById('trackIdGroup')
+        const playlistIdGroup = document.getElementById('playlistIdGroup')
+        const queryInput = document.getElementById('query')
+        const trackIdInput = document.getElementById('track_id')
+        const playlistIdInput = document.getElementById('playlist_id')
+        const limitInput = document.getElementById('limit')
+        const responsePanel = document.getElementById('responsePanel')
+        const responseContent = document.getElementById('responseContent')
+        const copyBtn = document.getElementById('copyBtn')
+
+        function updateFormFields() {
+            const action = actionSelect.value
+            queryGroup.style.display = action === 'search' ? 'block' : 'none'
+            trackIdGroup.style.display = action === 'track' ? 'block' : 'none'
+            playlistIdGroup.style.display = action === 'playlist' ? 'block' : 'none'
+            
+            queryInput.required = action === 'search'
+            trackIdInput.required = action === 'track'
+            playlistIdInput.required = action === 'playlist'
+        }
+
+        actionSelect.addEventListener('change', updateFormFields)
+        updateFormFields()
+
+        // Handle form submission
+        const form = document.getElementById('apiForm')
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            
+            const apiKey = savedApiKey || apiKeyInput.value.trim()
+            if (!apiKey) {
+                alert('❌ API Key wajib diisi! Masukkan API Key Anda terlebih dahulu.')
+                return
+            }
+            
+            const action = actionSelect.value
+            const limit = limitInput.value
+            const params = new URLSearchParams()
+            params.append('action', action)
+            params.append('limit', limit)
+            params.append('api_key', apiKey)
+            
+            if (action === 'search') {
+                const query = queryInput.value.trim()
+                if (!query) {
+                    alert('Query wajib diisi untuk action search')
+                    return
+                }
+                params.append('query', query)
+            } else if (action === 'track') {
+                const trackId = trackIdInput.value
+                if (!trackId) {
+                    alert('Track ID wajib diisi untuk action track')
+                    return
+                }
+                params.append('track_id', trackId)
+            } else if (action === 'playlist') {
+                const playlistId = playlistIdInput.value
+                if (!playlistId) {
+                    alert('Playlist ID wajib diisi untuk action playlist')
+                    return
+                }
+                params.append('playlist_id', playlistId)
+            }
+            
+            responsePanel.style.display = 'block'
+            responseContent.textContent = 'Loading...'
+            
+            try {
+                const response = await fetch(`/api/soundcloud?${params.toString()}`)
+                const data = await response.json()
+                responseContent.textContent = JSON.stringify(data, null, 2)
+                
+                if (!response.ok && data.error === 'UNAUTHORIZED') {
+                    keyStatusDiv.innerHTML = '<span class="key-status key-invalid">✗ API Key tidak valid!</span>'
+                }
+            } catch (error) {
+                responseContent.textContent = JSON.stringify({ error: error.message }, null, 2)
+            }
+        })
+
+        copyBtn.addEventListener('click', () => {
+            const text = responseContent.textContent
+            navigator.clipboard.writeText(text)
+            copyBtn.textContent = '✓ Copied!'
+            setTimeout(() => {
+                copyBtn.textContent = '📋 Copy'
+            }, 2000)
+        })
+
+        // Example click handler
+        document.querySelectorAll('.example').forEach(el => {
+            el.addEventListener('click', () => {
+                const action = el.dataset.action
+                const query = el.dataset.query
+                const trackId = el.dataset.trackId
+                const playlistId = el.dataset.playlistId
+                
+                actionSelect.value = action
+                updateFormFields()
+                
+                if (query) queryInput.value = query
+                if (trackId) trackIdInput.value = trackId
+                if (playlistId) playlistIdInput.value = playlistId
+                
+                form.dispatchEvent(new Event('submit'))
+            })
+        })
+    </script>
+</body>
+</html>
