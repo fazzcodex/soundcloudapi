@@ -1,4 +1,4 @@
-// plugins/scraper/soundcloud.js — SoundCloud music scraper
+// soundcloud.js - SoundCloud music scraper untuk Express
 const axios = require('axios')
 
 const BASE_API = 'https://api-mobi.soundcloud.com'
@@ -237,13 +237,11 @@ async function getTrackDetail(trackId) {
   const track = await getTrack(trackId)
   if (!track || !track.id) throw new Error('Track tidak ditemukan')
   
-  // Get related tracks & comments in parallel
   const [related, comments] = await Promise.all([
     getRelatedTracks(trackId, 10),
     getTrackComments(trackId, 20)
   ])
   
-  // Get streaming URL
   let streamingUrl = null
   const previewTranscoding = track.media?.transcodings?.find(
     t => t.preset === 'mp3_1_0' || t.format?.protocol === 'progressive'
@@ -273,7 +271,8 @@ async function getPlaylistDetail(playlistId) {
   return parsePlaylist(playlist, true)
 }
 
-const handler = async (req, res) => {
+// Handler untuk Express
+async function handleSoundCloud(req, res) {
   const action = req.query.action || req.body.action || 'homepage'
   const query = req.query.query || req.body.query || req.query.q || req.body.q || ''
   const trackId = parseInt(req.query.track_id || req.body.track_id || '0')
@@ -367,20 +366,10 @@ const handler = async (req, res) => {
 }
 
 module.exports = {
-  endpoint: 'soundcloud',
-  name: 'SoundCloud — Music Scraper',
-  description: 'Scraper SoundCloud API — cari track, lihat playlist trending, ambil detail track (related, comments, streaming URL).',
-  category: 'scraper',
-  tags: ['soundcloud', 'music', 'audio', 'streaming', 'track'],
-  minRole: 'basic',
-  upload: false,
-  params: [
-    { name: 'action', type: 'string', required: true, description: 'homepage (trending) | search (cari track) | track (detail track) | playlist (detail playlist)' },
-    { name: 'query', type: 'string', required: false, description: 'Kata kunci pencarian (action=search)' },
-    { name: 'track_id', type: 'number', required: false, description: 'ID track SoundCloud (action=track)' },
-    { name: 'playlist_id', type: 'number', required: false, description: 'ID playlist SoundCloud (action=playlist)' },
-    { name: 'limit', type: 'number', required: false, description: 'Jumlah hasil (default: 20, maks: 50)' }
-  ],
-  example: '/api/soundcloud?action=search&query=iqro&limit=10',
-  handler
+  handleSoundCloud,
+  getHomepage,
+  getTrackDetail,
+  getPlaylistDetail,
+  searchTracks,
+  searchSuggestions
 }
