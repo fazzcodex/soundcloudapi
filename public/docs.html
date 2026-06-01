@@ -1,0 +1,1014 @@
+<!-- public/docs.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundCloud API Documentation - FazzCode</title>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            background: linear-gradient(135deg, #ff7700, #ff5500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: #ff7700;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(255, 119, 0, 0.1), transparent);
+            border-left-color: #ff7700;
+        }
+
+        .nav-item i {
+            width: 25px;
+            margin-right: 10px;
+            color: #ff7700;
+        }
+
+        .nav-item span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 40px 60px;
+            min-height: 100vh;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(255, 119, 0, 0.1), rgba(255, 85, 0, 0.05));
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 119, 0, 0.2);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff, #ffaa66);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .badge-container {
+            margin-top: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255, 119, 0, 0.2);
+            border: 1px solid rgba(255, 119, 0, 0.3);
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin: 0 5px;
+        }
+
+        .badge i {
+            margin-right: 5px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 50px;
+            scroll-margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #ff7700;
+            font-size: 1.8rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 i {
+            color: #ff7700;
+        }
+
+        .code-block {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+        }
+
+        .code-block code {
+            color: #ffaa66;
+        }
+
+        /* Table */
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .param-table th,
+        .param-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .param-table th {
+            color: #ff7700;
+            font-weight: 600;
+            background: rgba(255, 119, 0, 0.1);
+        }
+
+        .param-table td {
+            color: #ccc;
+        }
+
+        .param-table code {
+            background: rgba(255, 119, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Response Example */
+        .response-example {
+            background: #0a0a0f;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .response-header {
+            background: rgba(255, 119, 0, 0.1);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .response-header i {
+            color: #00aa55;
+        }
+
+        .response-header span {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .response-body {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Endpoint Tag */
+        .endpoint-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 170, 85, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-bottom: 10px;
+        }
+
+        .endpoint-tag.get {
+            background: rgba(0, 170, 85, 0.2);
+            color: #00aa55;
+        }
+
+        .endpoint-tag.post {
+            background: rgba(255, 170, 0, 0.2);
+            color: #ffaa00;
+        }
+
+        .url {
+            font-family: monospace;
+            font-size: 1rem;
+            color: #ffaa66;
+            margin: 10px 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+            color: #666;
+        }
+
+        .footer a {
+            color: #ff7700;
+            text-decoration: none;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff7700;
+            border-radius: 4px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .hero {
+                padding: 30px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 101;
+                background: #ff7700;
+                border: none;
+                color: white;
+                padding: 10px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+        
+        /* Copy button */
+        .copy-btn {
+            float: right;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: background 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 119, 0, 0.5);
+        }
+        
+        /* Status indicator */
+        .status-badge {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: #00aa55;
+            box-shadow: 0 0 5px #00aa55;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-music"></i> SoundCloud API</h2>
+            <p>Documentation v1.0.0</p>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-section="overview">
+                <i class="fas fa-home"></i>
+                <span>Overview</span>
+            </div>
+            <div class="nav-item" data-section="authentication">
+                <i class="fas fa-key"></i>
+                <span>Authentication</span>
+            </div>
+            <div class="nav-item" data-section="rate-limits">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Rate Limits</span>
+            </div>
+            <div class="nav-item" data-section="endpoints">
+                <i class="fas fa-code-branch"></i>
+                <span>Endpoints</span>
+            </div>
+            <div class="nav-item" data-section="examples">
+                <i class="fas fa-code"></i>
+                <span>Code Examples</span>
+            </div>
+            <div class="nav-item" data-section="errors">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Error Codes</span>
+            </div>
+            <div class="nav-item" data-section="tools">
+                <i class="fas fa-tools"></i>
+                <span>API Tools</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1><i class="fas fa-cloud-music"></i> SoundCloud Scraper API</h1>
+            <p>Free & Powerful SoundCloud API - Search tracks, get playlists, streaming URLs, and more</p>
+            <div class="badge-container">
+                <span class="badge"><i class="fas fa-bolt"></i> Fast Response</span>
+                <span class="badge"><i class="fas fa-shield-alt"></i> Anti-DDoS Protected</span>
+                <span class="badge"><i class="fas fa-infinity"></i> No Daily Limit</span>
+                <span class="badge"><i class="fas fa-chart-line"></i> 99.9% Uptime</span>
+            </div>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="overview" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                Overview
+            </h2>
+            <div class="card">
+                <p>SoundCloud Scraper API adalah layanan gratis yang memungkinkan Anda mengakses data dari SoundCloud tanpa perlu official API key. Mendukung pencarian track, detail playlist, rekomendasi terkait, komentar, dan streaming URL.</p>
+                <br>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+                    <div>
+                        <i class="fas fa-check-circle" style="color: #00aa55;"></i>
+                        <strong> Base URL:</strong>
+                        <code style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px;">https://api.fazzcode.qzz.io</code>
+                    </div>
+                    <div>
+                        <i class="fas fa-check-circle" style="color: #00aa55;"></i>
+                        <strong> Version:</strong> v1.0.0
+                    </div>
+                    <div>
+                        <i class="fas fa-check-circle" style="color: #00aa55;"></i>
+                        <strong> Methods:</strong> GET, POST
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="authentication" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-key"></i>
+                Authentication
+            </h2>
+            <div class="card">
+                <h3><i class="fas fa-lock"></i> API Key Required</h3>
+                <p>Semua request wajib menyertakan API key. Anda bisa mendapatkan API key dari:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this, 'https://raw.githubusercontent.com/fazzcode/api-keys/main/soundcloud-keys.json')">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code class="language-bash">curl -X GET "https://raw.githubusercontent.com/fazzcode/api-keys/main/soundcloud-keys.json"</code></pre>
+                </div>
+                <br>
+                <h3><i class="fas fa-envelope"></i> Cara Kirim API Key</h3>
+                <table class="param-table">
+                    <thead>
+                        <tr><th>Method</th><th>Header/Parameter</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>Header</code></td><td><code>X-API-Key</code></td><td><code>X-API-Key: your_api_key_here</code></td></tr>
+                        <tr><td><code>Bearer Token</code></td><td><code>Authorization</code></td><td><code>Authorization: Bearer your_api_key_here</code></td></tr>
+                        <tr><td><code>Query Parameter</code></td><td><code>api_key</code></td><td><code>?api_key=your_api_key_here</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Rate Limits Section -->
+        <div id="rate-limits" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-tachometer-alt"></i>
+                Rate Limits
+            </h2>
+            <div class="card">
+                <h3><i class="fas fa-shield-alt"></i> Anti-DDoS Protection</h3>
+                <table class="param-table">
+                    <thead><tr><th>Limit Type</th><th>Value</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><i class="fas fa-user"></i> Per IP</td><td>30 request / menit</td><td>Maximum request per IP address</td></tr>
+                        <tr><td><i class="fas fa-clock"></i> Per Second</td><td>5 request / detik</td><td>Maximum burst rate</td></tr>
+                        <tr><td><i class="fas fa-globe"></i> Global</td><td>1000 request / menit</td><td>All IPs combined</td></tr>
+                        <tr><td><i class="fas fa-exclamation-triangle"></i> Suspicious</td><td>50 request / menit</td><td>IP akan dimonitor</td></tr>
+                        <tr><td><i class="fas fa-ban"></i> Blacklist</td><td>100 request / menit</td><td>IP akan diblokir 15 menit</td></tr>
+                    </tbody>
+                </table>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+  "status": false,
+  "error": "RATE_LIMIT_EXCEEDED",
+  "message": "Terlalu banyak request! Maksimal 30 request per 60 detik.",
+  "retry_after": 45
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Endpoints Section -->
+        <div id="endpoints" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-code-branch"></i>
+                Endpoints
+            </h2>
+
+            <!-- Endpoint 1: Homepage -->
+            <div class="card">
+                <div class="endpoint-tag get">
+                    <i class="fas fa-download"></i> GET / POST
+                </div>
+                <h3><i class="fas fa-home"></i> Homepage - Trending Playlists</h3>
+                <div class="url">/api/soundcloud?action=homepage&limit=10&api_key=YOUR_KEY</div>
+                <p>Mendapatkan playlist trending dari SoundCloud homepage.</p>
+                <table class="param-table">
+                    <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>action</code></td><td>string</td><td>✅</td><td>Harus "homepage"</td></tr>
+                        <tr><td><code>limit</code></td><td>number</td><td>❌</td><td>Jumlah hasil (default: 20, max: 50)</td></tr>
+                        <tr><td><code>api_key</code></td><td>string</td><td>✅</td><td>API key Anda</td></tr>
+                    </tbody>
+                </table>
+                <div class="response-example">
+                    <div class="response-header">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Response Example</span>
+                    </div>
+                    <div class="response-body">
+                        <pre><code class="language-json">{
+  "status": true,
+  "message": "10 playlist trending",
+  "results": [
+    {
+      "id": 1734880683,
+      "title": "Hip Hop & Rap",
+      "user": "Trending Music",
+      "track_count": 50,
+      "likes": 28926,
+      "url": "https://soundcloud.com/trending-music-us/sets/hip-hop-rap"
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Endpoint 2: Search -->
+            <div class="card">
+                <div class="endpoint-tag get">
+                    <i class="fas fa-search"></i> GET / POST
+                </div>
+                <h3><i class="fas fa-search"></i> Search Tracks</h3>
+                <div class="url">/api/soundcloud?action=search&query=iqro&limit=10&api_key=YOUR_KEY</div>
+                <p>Mencari track berdasarkan keyword.</p>
+                <table class="param-table">
+                    <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>action</code></td><td>string</td><td>✅</td><td>Harus "search"</td></tr>
+                        <tr><td><code>query</code></td><td>string</td><td>✅</td><td>Keyword pencarian</td></tr>
+                        <tr><td><code>limit</code></td><td>number</td><td>❌</td><td>Jumlah hasil (default: 20, max: 50)</td></tr>
+                        <tr><td><code>api_key</code></td><td>string</td><td>✅</td><td>API key Anda</td></tr>
+                    </tbody>
+                </table>
+                <div class="response-example">
+                    <div class="response-header">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Response Example</span>
+                    </div>
+                    <div class="response-body">
+                        <pre><code class="language-json">{
+  "status": true,
+  "query": "iqro",
+  "suggestions": ["iqro raim laode", "iqro'"],
+  "total_results": 562,
+  "results": [
+    {
+      "id": 2258880134,
+      "title": "Iqro'",
+      "artist": "Raim Laode",
+      "duration": "0:30",
+      "likes": 200,
+      "plays": 9106,
+      "url": "https://soundcloud.com/raimlaode-music/iqro"
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Endpoint 3: Track Detail -->
+            <div class="card">
+                <div class="endpoint-tag get">
+                    <i class="fas fa-music"></i> GET / POST
+                </div>
+                <h3><i class="fas fa-music"></i> Track Detail</h3>
+                <div class="url">/api/soundcloud?action=track&track_id=2258880134&api_key=YOUR_KEY</div>
+                <p>Mendapatkan detail lengkap track termasuk related tracks, comments, dan streaming URL.</p>
+                <table class="param-table">
+                    <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>action</code></td><td>string</td><td>✅</td><td>Harus "track"</td></tr>
+                        <tr><td><code>track_id</code></td><td>number</td><td>✅</td><td>ID track SoundCloud</td></tr>
+                        <tr><td><code>api_key</code></td><td>string</td><td>✅</td><td>API key Anda</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Endpoint 4: Playlist Detail -->
+            <div class="card">
+                <div class="endpoint-tag get">
+                    <i class="fas fa-list"></i> GET / POST
+                </div>
+                <h3><i class="fas fa-list"></i> Playlist Detail</h3>
+                <div class="url">/api/soundcloud?action=playlist&playlist_id=1734880683&api_key=YOUR_KEY</div>
+                <p>Mendapatkan detail playlist termasuk semua track di dalamnya.</p>
+                <table class="param-table">
+                    <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>action</code></td><td>string</td><td>✅</td><td>Harus "playlist"</td></tr>
+                        <tr><td><code>playlist_id</code></td><td>number</td><td>✅</td><td>ID playlist SoundCloud</td></tr>
+                        <tr><td><code>api_key</code></td><td>string</td><td>✅</td><td>API key Anda</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Code Examples Section -->
+        <div id="examples" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-code"></i>
+                Code Examples
+            </h2>
+
+            <div class="card">
+                <h3><i class="fab fa-js"></i> JavaScript (Node.js)</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this, `const axios = require('axios')
+
+const API_KEY = 'your_api_key_here'
+const BASE_URL = 'https://api.fazzcode.qzz.io'
+
+// Search tracks
+async function searchTracks(query) {
+  const response = await axios.get(\`\${BASE_URL}/api/soundcloud\`, {
+    params: {
+      action: 'search',
+      query: query,
+      limit: 10,
+      api_key: API_KEY
+    }
+  })
+  return response.data
+}
+
+// Get track detail
+async function getTrackDetail(trackId) {
+  const response = await axios.get(\`\${BASE_URL}/api/soundcloud\`, {
+    params: {
+      action: 'track',
+      track_id: trackId,
+      api_key: API_KEY
+    }
+  })
+  return response.data
+}
+
+// Usage
+searchTracks('iqro').then(console.log)
+getTrackDetail(2258880134).then(console.log)`)">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code class="language-javascript">const axios = require('axios')
+
+const API_KEY = 'your_api_key_here'
+const BASE_URL = 'https://api.fazzcode.qzz.io'
+
+// Search tracks
+async function searchTracks(query) {
+  const response = await axios.get(`${BASE_URL}/api/soundcloud`, {
+    params: {
+      action: 'search',
+      query: query,
+      limit: 10,
+      api_key: API_KEY
+    }
+  })
+  return response.data
+}
+
+// Get track detail
+async function getTrackDetail(trackId) {
+  const response = await axios.get(`${BASE_URL}/api/soundcloud`, {
+    params: {
+      action: 'track',
+      track_id: trackId,
+      api_key: API_KEY
+    }
+  })
+  return response.data
+}
+
+// Usage
+searchTracks('iqro').then(console.log)
+getTrackDetail(2258880134).then(console.log)</code></pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fab fa-python"></i> Python</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this, `import requests
+
+API_KEY = 'your_api_key_here'
+BASE_URL = 'https://api.fazzcode.qzz.io'
+
+# Search tracks
+def search_tracks(query):
+    params = {
+        'action': 'search',
+        'query': query,
+        'limit': 10,
+        'api_key': API_KEY
+    }
+    response = requests.get(f'{BASE_URL}/api/soundcloud', params=params)
+    return response.json()
+
+# Get track detail
+def get_track_detail(track_id):
+    params = {
+        'action': 'track',
+        'track_id': track_id,
+        'api_key': API_KEY
+    }
+    response = requests.get(f'{BASE_URL}/api/soundcloud', params=params)
+    return response.json()
+
+# Usage
+print(search_tracks('iqro'))
+print(get_track_detail(2258880134))`)">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code class="language-python">import requests
+
+API_KEY = 'your_api_key_here'
+BASE_URL = 'https://api.fazzcode.qzz.io'
+
+# Search tracks
+def search_tracks(query):
+    params = {
+        'action': 'search',
+        'query': query,
+        'limit': 10,
+        'api_key': API_KEY
+    }
+    response = requests.get(f'{BASE_URL}/api/soundcloud', params=params)
+    return response.json()
+
+# Get track detail
+def get_track_detail(track_id):
+    params = {
+        'action': 'track',
+        'track_id': track_id,
+        'api_key': API_KEY
+    }
+    response = requests.get(f'{BASE_URL}/api/soundcloud', params=params)
+    return response.json()
+
+# Usage
+print(search_tracks('iqro'))
+print(get_track_detail(2258880134))</code></pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-terminal"></i> cURL</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard(this, `# Search tracks
+curl -X GET "https://api.fazzcode.qzz.io/api/soundcloud?action=search&query=iqro&limit=10&api_key=YOUR_KEY"
+
+# Get track detail
+curl -X GET "https://api.fazzcode.qzz.io/api/soundcloud?action=track&track_id=2258880134&api_key=YOUR_KEY"
+
+# Get playlist detail
+curl -X GET "https://api.fazzcode.qzz.io/api/soundcloud?action=playlist&playlist_id=1734880683&api_key=YOUR_KEY"
+
+# With header authentication
+curl -X GET "https://api.fazzcode.qzz.io/api/soundcloud?action=homepage" \
+  -H "X-API-Key: YOUR_KEY"`)">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <pre><code class="language-bash"># Search tracks
+curl -X GET "https://api.fazzcode.qzz.io/api/soundcloud?action=search&query=iqro&limit=10&api_key=YOUR_KEY"
+
+# Get track detail
+curl -X GET "https://api.fazzcode.qzz.io/api/soundcloud?action=track&track_id=2258880134&api_key=YOUR_KEY"
+
+# Get playlist detail
+curl -X GET "https://api.fazzcode.qzz.io/api/soundcloud?action=playlist&playlist_id=1734880683&api_key=YOUR_KEY"
+
+# With header authentication
+curl -X GET "https://api.fazzcode.qzz.io/api/soundcloud?action=homepage" \
+  -H "X-API-Key: YOUR_KEY"</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Codes Section -->
+        <div id="errors" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Error Codes
+            </h2>
+            <div class="card">
+                <table class="param-table">
+                    <thead><tr><th>Error Code</th><th>HTTP Status</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>UNAUTHORIZED</code></td><td>401</td><td>API key tidak disertakan</td></tr>
+                        <tr><td><code>FORBIDDEN</code></td><td>403</td><td>API key tidak valid</td></tr>
+                        <tr><td><code>RATE_LIMIT_EXCEEDED</code></td><td>429</td><td>Terlalu banyak request</td></tr>
+                        <tr><td><code>SERVICE_OVERLOAD</code></td><td>503</td><td>Server sedang padat</td></tr>
+                        <tr><td><code>NOT_FOUND</code></td><td>404</td><td>Endpoint tidak ditemukan</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- API Tools Section -->
+        <div id="tools" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-tools"></i>
+                API Tools
+            </h2>
+            <div class="card">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px;">
+                        <i class="fas fa-heartbeat" style="font-size: 2rem; color: #00aa55;"></i>
+                        <h4 style="margin: 10px 0;">Health Check</h4>
+                        <code style="font-size: 0.7rem;">/health</code>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px;">
+                        <i class="fas fa-book" style="font-size: 2rem; color: #ff7700;"></i>
+                        <h4 style="margin: 10px 0;">Documentation</h4>
+                        <code style="font-size: 0.7rem;">/docs</code>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px;">
+                        <i class="fas fa-chart-line" style="font-size: 2rem; color: #ffaa00;"></i>
+                        <h4 style="margin: 10px 0;">Admin Stats</h4>
+                        <code style="font-size: 0.7rem;">/admin/stats</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>
+                <i class="fas fa-copyright"></i> 2024 SoundCloud Scraper API | 
+                <a href="/"><i class="fas fa-home"></i> Home</a> | 
+                <a href="/health"><i class="fas fa-heartbeat"></i> Health</a>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.7rem;">
+                ⚠️ For educational purposes only. Respect SoundCloud's terms of service.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll and active nav
+        const sections = ['overview', 'authentication', 'rate-limits', 'endpoints', 'examples', 'errors', 'tools']
+        
+        function setActiveNav(sectionId) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active')
+                if (item.dataset.section === sectionId) {
+                    item.classList.add('active')
+                }
+            })
+        }
+        
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const sectionId = item.dataset.section
+                const element = document.getElementById(sectionId)
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' })
+                    setActiveNav(sectionId)
+                }
+                // Close sidebar on mobile
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('open')
+                }
+            })
+        })
+        
+        // Scroll spy
+        window.addEventListener('scroll', () => {
+            let current = ''
+            for (const section of sections) {
+                const element = document.getElementById(section)
+                if (element) {
+                    const rect = element.getBoundingClientRect()
+                    if (rect.top <= 100 && rect.bottom >= 100) {
+                        current = section
+                        break
+                    }
+                }
+            }
+            if (current) {
+                setActiveNav(current)
+            }
+        })
+        
+        // Copy to clipboard function
+        function copyToClipboard(button, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerHTML
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!'
+                setTimeout(() => {
+                    button.innerHTML = originalText
+                }, 2000)
+            })
+        }
+        
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle')
+        const sidebar = document.getElementById('sidebar')
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open')
+            })
+        }
+        
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    sidebar.classList.remove('open')
+                }
+            }
+        })
+        
+        // Make copyToClipboard global
+        window.copyToClipboard = copyToClipboard
+    </script>
+</body>
+</html>
